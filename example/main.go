@@ -16,8 +16,8 @@ import (
 func main() {
 	valid, err := godate.Validation("2017-02-28")
 	if err != nil {
-		fmt.Printf("Something went wrong: %s", err)
+		fmt.Printf("Something went wrong: %s\n", err.Error())
 	}
 
-	fmt.Printf("Successfully validation the string: %s", valid)
+	fmt.Printf("Successfully validation the string: %t\n", valid)
 }
