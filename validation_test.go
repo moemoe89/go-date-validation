@@ -1,93 +1,137 @@
-package validation
+package validation_test
 
 import (
-	"testing"
+	d "github.com/moemoe89/go-date-validation"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
-func TestStringToInt(t *testing.T) {
-	s := "1"
-	_, err := StringToInt(s)
-	if err != nil {
-		t.Errorf("Should return no error, got %s", err)
-	}
-}
+var _ = Describe("Validation", func() {
 
-func TestWrongStringToInt(t *testing.T) {
-	s := "s"
-	_, err := StringToInt(s)
-	if err == nil {
-		t.Errorf("Should return wrong string, got %s", err)
-	}
-}
+	Describe("Add", func() {
 
-func TestDateFormat(t *testing.T) {
-	date := "2017-02-28"
-	_, err := Validation(date)
-	if err != nil {
-		t.Errorf("Should return no error, got %s", err)
-	}
-}
+		Context("when string is number", func() {
 
-func TestWrongDateFormat(t *testing.T) {
-	date := "lorem-epsum"
-	_, err := Validation(date)
-	if err == nil {
-		t.Errorf("Should return error wrong date format, got %s", err)
-	}
-}
+			It("return an number", func() {
+				s := "1"
+				number, err := d.StringToInt(s)
+				Expect(*number).To(Equal(1))
+				Expect(err).NotTo(HaveOccurred())
+			})
 
-func TestWrongNumberYearFormat(t *testing.T) {
-	date := "s-12-12"
-	_, err := Validation(date)
-	if err == nil {
-		t.Errorf("Should return error wrong year format, got %s", err)
-	}
-}
+		})
 
-func TestWrongNumberMonthFormat(t *testing.T) {
-	date := "2017-s-12"
-	_, err := Validation(date)
-	if err == nil {
-		t.Errorf("Should return error wrong month format, got %s", err)
-	}
-}
+		Context("when string isn't number", func() {
 
-func TestWrongNumberDayFormat(t *testing.T) {
-	date := "2017-12-s"
-	_, err := Validation(date)
-	if err == nil {
-		t.Errorf("Should return error wrong day format, got %s", err)
-	}
-}
+			It("return an error", func() {
+				var xNum *int
+				s := "s"
+				number, err := d.StringToInt(s)
+				Expect(number).To(Equal(xNum))
+				Expect(err).To(HaveOccurred())
+			})
+		})
 
-func TestWrongYearFormat(t *testing.T) {
-	date := "0-12-12"
-	_, err := Validation(date)
-	if err == nil {
-		t.Errorf("Should return error wrong year format, got %s", err)
-	}
-}
+		Context("when string is date", func() {
 
-func TestWrongMonthFormat(t *testing.T) {
-	date := "2017-13-12"
-	_, err := Validation(date)
-	if err == nil {
-		t.Errorf("Should return error wrong month format, got %s", err)
-	}
-}
+			It("return an true", func() {
+				date := "2017-02-28"
+				ok, err := d.Validation(date)
+				Expect(ok).To(Equal(true))
+				Expect(err).NotTo(HaveOccurred())
+			})
 
-func TestWrongDayFormat(t *testing.T) {
-	date := "2017-12-32"
-	_, err := Validation(date)
-	if err == nil {
-		t.Errorf("Should return error wrong day format, got %s", err)
-	}
-}
+		})
 
-func TestOutOfRangeDateFormat(t *testing.T) {
-	date := "2017-02-29"
-	_, err := Validation(date)
-	if err == nil {
-		t.Errorf("Should return error out of range date format, got %s", err)
-	}
-}
+		Context("when string isn't date", func() {
+
+			It("return an error", func() {
+				date := "lorem-epsum"
+				ok, err := d.Validation(date)
+				Expect(ok).To(Equal(false))
+				Expect(err).To(HaveOccurred())
+			})
+
+		})
+
+		Context("when year string isn't number", func() {
+
+			It("return an error", func() {
+				date := "s-12-12"
+				ok, err := d.Validation(date)
+				Expect(ok).To(Equal(false))
+				Expect(err).To(HaveOccurred())
+			})
+
+		})
+
+		Context("when month string isn't number", func() {
+
+			It("return an error", func() {
+				date := "2017-s-12"
+				ok, err := d.Validation(date)
+				Expect(ok).To(Equal(false))
+				Expect(err).To(HaveOccurred())
+			})
+
+		})
+
+		Context("when day string isn't number", func() {
+
+			It("return an error", func() {
+				date := "2017-12-s"
+				ok, err := d.Validation(date)
+				Expect(ok).To(Equal(false))
+				Expect(err).To(HaveOccurred())
+			})
+
+		})
+
+		Context("when year string is wrong number", func() {
+
+			It("return an error", func() {
+				date := "0-12-12"
+				ok, err := d.Validation(date)
+				Expect(ok).To(Equal(false))
+				Expect(err).To(HaveOccurred())
+			})
+
+		})
+
+		Context("when month string is wrong number", func() {
+
+			It("return an error", func() {
+				date := "2017-13-12"
+				ok, err := d.Validation(date)
+				Expect(ok).To(Equal(false))
+				Expect(err).To(HaveOccurred())
+			})
+
+		})
+
+		Context("when day string is wrong number", func() {
+
+			It("return an error", func() {
+				date := "2017-12-32"
+				ok, err := d.Validation(date)
+				Expect(ok).To(Equal(false))
+				Expect(err).To(HaveOccurred())
+			})
+
+		})
+
+		Context("when date string is out of range", func() {
+
+			It("return an error", func() {
+				date := "2017-02-29"
+				ok, err := d.Validation(date)
+				Expect(ok).To(Equal(false))
+				Expect(err).To(HaveOccurred())
+			})
+
+		})
+
+	})
+
+})
